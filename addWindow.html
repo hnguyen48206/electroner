@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
+        <link rel="stylesheet" type="text/css" href="material.css"  />
+    <title>Thêm item cho list</title>
+</head>
+<body>
+    <form style="padding:10px;">
+        <label>Điền item</label>
+        <input autofocus type="text" id="item">
+        <button class="waves-effect waves-light btn" type="submit">Thêm</button>
+    </form>
+
+    <script>
+        const electron =require('electron');
+        //use ipcRenderer to send data across windows
+        const {ipcRenderer} = electron;
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', submitForm);
+
+        function submitForm(e)
+        {
+            e.preventDefault();
+            const item= document.querySelector('#item').value;
+            console.log(item);
+            //send data with a name, just like indexing
+            ipcRenderer.send('item:add', item)
+        }
+    </script>
+</body>
+</html>

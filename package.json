@@ -1,0 +1,29 @@
+{
+  "name": "vcl",
+  "productName": "VCL app",
+  "version": "1.0.0",
+  "description": "Ứng dụng vl của VNPT Beer",
+  "main": "main.js",
+  "scripts": {
+    "setup": "electron-installer-windows --src dist/app-win32-x64/ --dest dist/installers/",
+    "start": "electron .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"VCL App\"",
+    "package-linux": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/icon.png --prune=true --out=release-builds"
+  },
+  "author": "hoangN",
+  "license": "MIT",
+  "dependencies": {
+    "excel": "^1.0.0",
+    "jquery": "^3.3.1",
+    "materialize-css": "^1.0.0-rc.2",
+    "mssql": "^4.3.0",
+    "read-excel-file": "^2.0.6",
+    "xlsx": "^0.14.1"
+  },
+  "devDependencies": {
+    "electron": "^13.1.5",
+    "electron-packager": "^13.0.1",
+    "electron-winstaller": "^2.7.0"
+  }
+}

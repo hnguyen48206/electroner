@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <script type="module">
+        // require('./main.js')
+        // import * as main from './main.js';
+
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <link async defer href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="material.css" />
+    <link rel="stylesheet" type="text/css" href="w3.css" />
+    <link rel="stylesheet" type="text/css" href="myCustomCSS.css" />
+
+    <script async defer type="text/javascript" src="node_modules/materialize-css/dist/js/materialize.js"></script>
+
+    <link async defer type="text/css" rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+    <link async defer type="text/css" rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+
+    <script type="text/javascript" src="stash.js"></script>
+    <script type="text/javascript" src="shim.js"></script>
+    <script async defer src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script async defer src="https://unpkg.com/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js"></script>
+
+
+
+
+    <!-- <link href="http://cdn.grapecity.com/spreadjs/hosted/css/gc.spread.sheets.excel2013white.10.1.0.css" rel="stylesheet"
+        type="text/css" />
+    <script type="text/javascript" src="http://cdn.grapecity.com/spreadjs/hosted/scripts/gc.spread.sheets.all.10.1.0.min.js"></script>
+    <script type="text/javascript" src="http://cdn.grapecity.com/spreadjs/hosted/scripts/interop/gc.spread.excelio.10.1.0.min.js"></script> -->
+
+    <title>Cửa sổ chính</title>
+    <script type="module">
+        $(document).ready(function () {
+            // var workbook = new GC.Spread.Sheets.Workbook(document.getElementById("ss"));
+            console.log(stash.get('foo')); // 'Hello World'
+            // const electron = require('electron');
+            import * as electron from 'electron';
+        });
+        function dbConnect(action, data) {
+            let query = {
+                getAll: 'select * from DM_DONVII'
+            }
+            data = []
+            console.log('dbconnect in');
+            // const sql = require('mssql');
+            import * as sql from 'mssql';
+
+            const config = {
+                user: 'qlhs',
+                password: 'qlhs@123',
+                server: '123.20.206.42',
+                database: 'QLHS',
+                port: '1433',
+            };
+            sql.connect(config, function (err) {
+                if (err) console.log(err);
+                // create transaction object
+                const transaction = new sql.Transaction();
+                transaction.begin(err => {
+                    let rolledBack = false;
+                    transaction.on('rollback', aborted => {
+                        // emited with aborted === true
+                        rolledBack = true;
+                    });
+                    const request = new sql.Request(transaction);
+                    // query to the database and get the records
+                    request.query(query.getAll, (err, result) => {
+                        // ... error checks
+                        if (err) {
+                            if (!rolledBack) {
+                                transaction.rollback(err => {
+                                    // ... transaction fail, now we go back as it has never started
+                                    console.log('fail as F**');
+                                })
+                            }
+                        } else {
+                            console.log(result.recordsets[0]);
+                            transaction.commit(err => {
+                                console.log("Transaction committed.");
+                            })
+                        }
+                    });
+                });
+            });
+        }
+
+    </script>
+</head>
+
+<body style=" background-image: linear-gradient(to right top, #f4fd98, #f8d666, #fcab43, #fd7b36, #f83d3d);">
+
+    <script>
+
+        var gridContent = [
+            { "Name": "Otto Clay", "Age": 25, "Country": 1, "Address": "Ap #897-1459 Quam Avenue", "Married": false },
+            { "Name": "Connor Johnston", "Age": 45, "Country": 2, "Address": "Ap #370-4647 Dis Av.", "Married": true },
+            { "Name": "Lacey Hess", "Age": 29, "Country": 3, "Address": "Ap #365-8835 Integer St.", "Married": false },
+            { "Name": "Timothy Henson", "Age": 56, "Country": 1, "Address": "911-5143 Luctus Ave", "Married": true },
+            { "Name": "Ramona Benton", "Age": 32, "Country": 3, "Address": "Ap #614-689 Vehicula Street", "Married": false }
+        ];
+
+        function refreshGrid() {
+            //call DataBase
+            $("#jsGrid").jsGrid({
+                width: "100%",
+                height: "400px",
+
+                inserting: true,
+                editing: true,
+                sorting: true,
+                paging: true,
+
+                data: clients,
+
+                fields: [
+                    { name: "Name", type: "text", width: 150, validate: "required" },
+                    { name: "Age", type: "number", width: 50 },
+                    { name: "Address", type: "text", width: 200 },
+                    { name: "Country", type: "select", items: countries, valueField: "Id", textField: "Name" },
+                    { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+                    { type: "control" }
+                ]
+            });
+        }
+
+        function showHideLoadingScreen(index) {
+            if (index == 'show') {
+                document.getElementById('loadingScreen').style.display = "block";
+                document.getElementById('content').style.display = "none";
+            }
+            else {
+                document.getElementById('loadingScreen').style.display = "none";
+                document.getElementById('content').style.display = "block";
+            }
+            // const M = require('materialize-css');
+            import * as M from 'materialize-css';
+
+        }
+
+    </script>
+
+    <div id="loadingScreen" hidden style="width: 100vw;
+    height: 100vh; background-color:rgba(0, 0, 0, 0.5); ">
+
+        <div style="position:absolute; /*it can be fixed too*/
+      left:0; right:0;
+      top:0; bottom:0;
+      margin:auto;">
+            <div class="loader">
+            </div>
+            <h3 style="color:white; font-weight: bold; margin-left:43%">Đang Xử lý...</h3>
+        </div>
+
+    </div>
+
+    <div id="content">
+        <div id="BeforeLogin" style="width: 100vw;
+        height: 100vh;">
+
+            <div id="player"></div>
+            <button class="waves-effect waves-light btn" onclick="loadPlayerHEVC()">Play</button>
+
+            <video-js id="my_video_1" class="vjs-default-skin" controls preload="auto" width="640" height="268">
+                <source src="playlist.m3u8" type="application/x-mpegURL">
+            </video-js>
+
+            <script src="https://unpkg.com/video.js/dist/video.js"></script>
+            <script src="https://unpkg.com/@videojs/http-streaming/dist/videojs-http-streaming.js"></script>
+
+            <script>
+                var player = videojs('my_video_1');
+            </script>
+
+            <script>
+                async function loadPlayerHEVC() {
+                    var resource = 'http://10.70.39.32:80/streams/60dd68fdc88f570012526657/stream/60dd68fdc88f570012526657.m3u8'
+                    const { createFFmpeg } = FFmpeg;
+                    const ffmpeg = createFFmpeg({ log: true });
+                    const { fetchFile } = FFmpeg;
+                    await ffmpeg.load();
+                    await ffmpeg.run('-i', resource, '-vcodec', 'libx264', '-acodec', 'copy', '-f' ,'hls', '-hls_list_size', '3', '-hls_wrap', '5', 'playlist.m3u8' );
+                    ffmpeg.exit(0);
+                }
+            </script>
+
+            <!-- <div class="w3-card-4" style="margin-top:10%; width:60%; margin-left: 20%; margin-right: 20% ">
+                <header class="w3-container w3-dark-grey">
+                    <h1>VCL</h1>
+                </header>
+                <div style="padding:10px; background: white"></div>
+                <div class="w3-container" style=" background: white" id="app">
+                    <div class="input-field col s6">
+                        <input v-model="username" id="username" type="text" class="validate">
+                        <label id="tendangnhap">Tên đăng nhập</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input v-model="userpass" id="password" type="password" class="validate">
+                        <label for="password">Mật khẩu</label>
+                    </div>
+                </div>
+
+                <footer onclick="login()"  class="w3-container w3-green">
+                    <div style="padding: 10px 0px 10px 10px"><button
+                            style="color:whitesmoke; background: transparent; border:none">Đăng
+                            Nhập</button></div>
+                </footer>
+                <script>
+                    var info=new Vue({
+                        el: "#app",
+                        data: {
+                            username: '',
+                            userpass: ''
+                        }
+                    })                
+                 
+                    var currentID = stash.get('lastLoginUsername');
+                    if (currentID != null || currentID != "") {
+                        if (typeof currentID !== 'undefined')
+                           info.username = currentID;
+                    }
+                 
+                    function login() {
+         
+                        console.log(info.username);
+                        console.log(info.userpass);
+                        if (info.username == "" || info.userpass == "") {
+                            alert("Xin vui lòng nhập đủ thông tin đăng nhập");
+                        }
+                        else {
+                            //login success
+                            document.body.style.backgroundImage = "";
+                            stash.set('lastLoginUsername', info.username);
+                            stash.set('isLogin', true);
+                            let beforeLogin = document.getElementById('BeforeLogin');
+                            beforeLogin.style.display = "none";
+                            let afterLogin = document.getElementById('AfterLogin');
+                            afterLogin.style.display = "block";
+                        }
+                    }
+                </script>
+            </div> -->
+        </div>
+
+
+        <div hidden id="AfterLogin" style="width: 100vw;
+        height: 100vh;">
+            <ul id="slide-out" class="sidenav">
+                <li>
+                    <div class="user-view" style="background:#e46a6a">
+                        <div class="background">
+                            <img src="images/office.jpg">
+                        </div>
+                        <a href="#name"><span class="white-text name">VNPT Beer</span></a>
+                        <a href="#email"><span class="white-text email">vnptbeer@vnpt.vn</span></a>
+                    </div>
+                </li>
+                <li onclick="logOut()"><a href="#!"><i class="material-icons">subdirectory_arrow_left
+                        </i>Đăng Xuất</a></li>
+
+            </ul>
+            <div style="background: #ee6e73; color:white; width: 100%; font-size: 2.5em">
+                <a href="#" data-target="slide-out" class="sidenav-trigger" style="margin-left:10px;"><i
+                        class="material-icons">menu</i></a>
+                <span style="margin-right: 47%; float:right">VCL</span>
+            </div>
+            <script>
+                $(document).ready(function () {
+                    $('.sidenav').sidenav();
+                });
+
+                function logOut() {
+                    document.getElementById('password').value = "";
+                    document.body.style.backgroundImage = "linear-gradient(to right top, #f4fd98, #f8d666, #fcab43, #fd7b36, #f83d3d)";
+                    let beforeLogin = document.getElementById('BeforeLogin');
+                    beforeLogin.style.display = "block";
+                    let afterLogin = document.getElementById('AfterLogin');
+                    afterLogin.style.display = "none";
+                }
+            </script>
+            <div class="navbar-fixed ">
+                <!-- <nav>
+                    <div class="nav-wrapper" style="height:0">
+                        <nav>
+                            <div class="nav-wrapper">
+                                <a href="#" class="brand-logo center">VCL</a>
+                            </div>
+                        </nav>
+                    </div>
+                </nav> -->
+                <div class="row">
+                    <div class="col s12" style="padding:0">
+                        <ul class="tabs">
+                            <li id="tab1" style="background: #f7d3d3" class="tab col s4"
+                                onclick="showHideTabs('addNewDocs')"><a href="#addNewDocs">Thêm
+                                    văn bản
+                                    mới</a></li>
+                            <li id="tab2" class="tab col s4" onclick="showHideTabs('printForms')"><a
+                                    href="#printForms">In
+                                    mẫu theo
+                                    dõi</a></li>
+                            <li id="tab3" class="tab col s4" onclick="showHideTabs('statistic')"><a
+                                    href="#statistic">Xem
+                                    thống kê</a></li>
+                        </ul>
+                    </div>
+                    <script>
+                        function showHideTabs(index) {
+                            console.log(index);
+                            var x = document.getElementById("addNewDocs");
+                            var y = document.getElementById("printForms");
+                            var z = document.getElementById("statistic");
+                            var tab1 = document.getElementById("tab1");
+                            var tab2 = document.getElementById("tab2");
+                            var tab3 = document.getElementById("tab3");
+                            if (index == 'addNewDocs') {
+                                x.style.display = "block";
+                                y.style.display = "none";
+                                z.style.display = "none";
+
+                                tab1.style.background = "#f7d3d3"
+                                tab2.style.background = ""
+                                tab3.style.background = ""
+
+                            }
+                            else if (index == 'printForms') {
+                                x.style.display = "none"
+                                y.style.display = "block";
+                                z.style.display = "none";
+
+                                tab1.style.background = ""
+                                tab2.style.background = "#f7d3d3"
+                                tab3.style.background = ""
+                            }
+                            else {
+                                x.style.display = "none"
+                                y.style.display = "none";
+                                z.style.display = "block";
+
+                                tab1.style.background = ""
+                                tab2.style.background = ""
+                                tab3.style.background = "#f7d3d3"
+                            }
+                        }
+                    </script>
+
+                </div>
+            </div>
+
+
+            <div style="padding:10px;">
+                <iframe hidden id="ifrmPrint"></iframe>
+
+                <div id="addNewDocs" class="col s12">
+                    <!-- <div id="holder">
+                        Drag your file here
+                    </div> -->
+
+                    <script>
+                        document.addEventListener('drop', function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            for (let f of e.dataTransfer.files) {
+                                console.log('File(s) you dragged here: ', f.path)
+                            }
+                        });
+                        document.addEventListener('dragover', function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        });
+                    </script>
+
+
+                    <form action="#">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Nhập từ file Excel</span>
+                                <input type="file" id="excelChosen">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" style="width:50%" type="text">
+                            </div>
+                        </div>
+                    </form>
+
+                    <script type="module">
+                        // const readXlsxFile = require('read-excel-file/node');
+                        import * as readXlsxFile from 'read-excel-file/node';
+                        // const XLSX = require('xlsx');
+                        import * as XLSX from 'xlsx';
+
+                        const input = document.getElementById('excelChosen');
+                        input.addEventListener('change', () => {
+                            showHideLoadingScreen('show');
+                            readXlsxFile(input.files[0].path).then((rows) => {
+                                console.log(rows);
+                                makeTableHTML(rows, 'read');
+                            })
+                            //read excel using js-xlsx
+                            // var workbook = XLSX.readFile(input.files[0].path);
+                            // showHideLoadingScreen('hide');
+                            // alert(XLSX.utils.sheet_to_html(workbook.Sheets[Object.keys(workbook.Sheets)[0]]));
+                        })
+                        // var excelIO = new GC.Spread.Excel.IO();
+
+                        function readExcel(type) {
+                            showHideLoadingScreen('show');
+                            // readXlsxFile('excelForms/Model.xlsx').then((rows) => {
+                            //     console.log(rows);
+                            //     makeTableHTML(rows, type)
+                            // })
+                            var workbook = XLSX.readFile('excelForms/Model.xlsx');
+                            let result = XLSX.utils.sheet_to_html(workbook.Sheets[Object.keys(workbook.Sheets)[0]]);
+                            showHideLoadingScreen('hide');
+                            if (type == 'print')
+                                printPages(result);
+                        }
+                        function makeTableHTML(myArray, type) {
+                            var result = "<table border=1>";
+                            for (var i = 0; i < myArray.length; i++) {
+                                result += "<tr>";
+                                for (var j = 0; j < myArray[i].length; j++) {
+                                    if (myArray[i][j] != null)
+                                        result += "<td>" + myArray[i][j] + "</td>";
+                                    else
+                                        result += "<td>" + '' + "</td>";
+                                }
+                                result += "</tr>";
+                            }
+                            result += "</table>";
+                            console.log(result);
+                            showHideLoadingScreen('hide');
+                            if (type == 'print')
+                                printPages(result);
+                            else
+                                alert(result);
+                        }
+                        function printPages(html) {
+                            try {
+                                var oIframe = document.getElementById('ifrmPrint');
+                                oIframe.innerHTML = "";
+                                var oContent = html;
+                                var oDoc = (oIframe.contentWindow || oIframe.contentDocument);
+                                if (oDoc.document) oDoc = oDoc.document;
+                                oDoc.write('<head> <title>title</title>');
+                                // oDoc.write('<head> <style type=\"text/css\" media=\"print\">@media print{@page {size: 25cm 35.7cm; margin: 5mm 5mm 5mm 5mm;}}</style> <title>title</title>');
+                                oDoc.write('</head><body onload="this.focus(); this.print();">');
+                                oDoc.write(oContent + '</body>');
+                                oDoc.close();
+                            } catch (e) {
+                                self.print();
+                            }
+                            console.log('print');
+                        }
+                        function ImportFile() {
+                            console.log("vcl")
+                            var excelUrl = "excelForms/Model.xlsx";
+
+                            var oReq = new XMLHttpRequest();
+                            oReq.open('get', excelUrl, true);
+                            oReq.responseType = 'blob';
+                            oReq.onload = function () {
+                                var blob = oReq.response;
+                                excelIO.open(blob, LoadSpread, function (message) {
+                                    console.log(message);
+                                });
+                            };
+                            oReq.send(null);
+                        }
+                        function LoadSpread(json) {
+                            jsonData = json;
+                            workbook.fromJSON(json);
+                            workbook.setActiveSheet("Revenues (Sales)");
+                        }
+
+                    </script>
+
+                    <div class="row">
+                        <script>
+                            function addNewDocs() {
+                                console.log('thêm docs');
+                                dbConnect();
+                            }
+                        </script>
+                        <div
+                            style="width:100%; margin-bottom:15px; border-bottom: grey 1px; border-style:none none dashed none;">
+                        </div>
+                        <form class="col s12">
+                            <div class=row>
+                                <h5 style="font-weight: bold; margin-left:10px">Nhập thủ công 1 văn bản mới.</h5>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s6">
+                                    <input id="first_name" type="text" class="validate">
+                                    <label for="first_name">Tên văn bản</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <input id="last_name" type="text" class="validate">
+                                    <label for="last_name">Mô tả</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <input id="first_name" type="text" class="validate">
+                                    <label for="first_name">Tên văn bản</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <input id="last_name" type="text" class="validate">
+                                    <label for="last_name">Mô tả</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <button class="waves-effect waves-light btn" onclick="addNewDocs()">Thêm</button>
+
+                </div>
+                <div id="printForms" hidden class="col s12">
+                    <script>
+                        function printModelForms(index) {
+                            console.log('mẫu văn bản ' + index);
+                            readExcel('print');
+                        }
+                    </script>
+                    <ul class="collection" id="formList">
+                        <li class="collection-item avatar">
+                            <i class="material-icons circle">folder</i>
+                            <span class="title">Văn bản xxxx</span>
+                            <p>Mô tả:<br>
+                                It is a long established fact that a reader will be distracted by the readable content
+                                of a
+                                page when looking at its layout.
+                            </p>
+                            <a class="secondary-content"><i onclick="printModelForms(1)"
+                                    class="material-icons">print</i></a>
+                        </li>
+                        <li class="collection-item avatar">
+                            <i class="material-icons circle">folder</i>
+                            <span class="title">Văn bản xxxx</span>
+                            <p>Mô tả:<br>
+                                It is a long established fact that a reader will be distracted by the readable content
+                                of a
+                                page when looking at its layout.
+                            </p>
+                            <a class="secondary-content"><i class="material-icons"
+                                    onclick="printModelForms(1)">print</i></a>
+                        </li>
+                        <li class="collection-item avatar">
+                            <i class="material-icons circle">folder</i>
+                            <span class="title">Văn bản xxxx</span>
+                            <p>Mô tả:<br>
+                                It is a long established fact that a reader will be distracted by the readable content
+                                of a
+                                page when looking at its layout.
+                            </p>
+                            <a class="secondary-content"><i class="material-icons"
+                                    onclick="printModelForms(1)">print</i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="statistic" hidden class="col s12">
+
+                    <div id="jsGrid"></div>
+                    <script>
+                        var clients = gridContent;
+
+                        var countries = [
+                            { Name: "", Id: 0 },
+                            { Name: "United States", Id: 1 },
+                            { Name: "Canada", Id: 2 },
+                            { Name: "United Kingdom", Id: 3 }
+                        ];
+
+                        $("#jsGrid").jsGrid({
+                            width: "100%",
+                            height: "400px",
+
+                            inserting: true,
+                            editing: true,
+                            sorting: true,
+                            paging: true,
+
+                            data: clients,
+
+                            fields: [
+                                { name: "Name", type: "text", width: 150, validate: "required" },
+                                { name: "Age", type: "number", width: 50 },
+                                { name: "Address", type: "text", width: 200 },
+                                { name: "Country", type: "select", items: countries, valueField: "Id", textField: "Name" },
+                                { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+                                { type: "control" }
+                            ]
+                        });
+                    </script>
+                </div>
+                <ul>
+
+                </ul>
+                <script type="module">
+                    // const { ipcRenderer } = electron;
+                    import {ipcRenderer} from "electron";
+
+                    const ul = document.querySelector('ul:not(.tabs .formList)');
+
+                    ipcRenderer.on('item:add', function (e, item) {
+                        ul.className = "collection"
+                        const li = document.createElement('li');
+                        li.className = "collection-item"
+                        const itemText = document.createTextNode(item);
+                        li.appendChild(itemText);
+                        ul.appendChild(li);
+                    })
+
+                    ipcRenderer.on('item:clear', function (e, item) {
+                        ul.innerHTML = ""; ul.className = "";
+                    })
+
+                    ul.addEventListener('dblclick', removeItem);
+
+                    function removeItem(e) {
+                        e.target.remove();
+                        if (ul.children.length == 0) {
+                            ul.className = ""
+                        }
+                    }
+
+                    //print html
+                    function printCustomExcel() {
+                        ipcRenderer.send("printPDF", div_to_be_targeted);
+                    }
+
+                </script>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+</body>
+
+</html>
