@@ -19,11 +19,12 @@ app.on('ready', function () {
         width: 800,
         height: 700,
         resizable: true,
-        show:false,
+        show: false,
         backgroundColor: '#2e2c29',
         // The lines below solved the issue
         webPreferences: {
-     }
+            preload: path.join(__dirname, 'logicOfMainWindow.js')
+        }
     });
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'mainWindow.html'),
@@ -35,7 +36,7 @@ app.on('ready', function () {
     })
     mainWindow.once('ready-to-show', () => {
         mainWindow.show()
-      })
+    })
     //build menu from template
     const mainMenu = Menu.buildFromTemplate(mainmenuTemplate)
     //Insert menu
@@ -46,6 +47,20 @@ app.on('ready', function () {
     workerWindow.loadURL("file://" + __dirname + "/printerWindow.html");
     workerWindow.hide();
 })
+
+ipcMain.on("startStreaming", function (event, url) {
+    console.log(url)
+    tester(url)
+})
+
+async function tester(url)
+{
+    const { createFFmpeg, fetchFile } = require('@ffmpeg/ffmpeg');
+    const ffmpeg = createFFmpeg({ log: true });
+    await ffmpeg.load();
+    await ffmpeg.run('-re', '-i', url, '-vcodec', 'libx264', '-acodec', 'copy', '-f', 'hls', '-hls_list_size', '3', '-hls_wrap', '5', 'playlist.m3u8');
+    // ffmpeg.exit(0);
+}
 
 // retransmit it to workerWindow
 ipcMain.on("printPDF", function (event, content) {

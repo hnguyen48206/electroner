@@ -2,11 +2,10 @@
 <html lang="en">
 
 <head>
-    
+
     <script type="module">
         // require('./main.js')
         // import * as main from './main.js';
-
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
@@ -26,11 +25,7 @@
     <script type="text/javascript" src="stash.js"></script>
     <script type="text/javascript" src="shim.js"></script>
     <script async defer src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script async defer src="https://unpkg.com/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js"></script>
-
-
-
-
+    <!-- <script async defer src="https://unpkg.com/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js"></script> -->
     <!-- <link href="http://cdn.grapecity.com/spreadjs/hosted/css/gc.spread.sheets.excel2013white.10.1.0.css" rel="stylesheet"
         type="text/css" />
     <script type="text/javascript" src="http://cdn.grapecity.com/spreadjs/hosted/scripts/gc.spread.sheets.all.10.1.0.min.js"></script>
@@ -41,8 +36,6 @@
         $(document).ready(function () {
             // var workbook = new GC.Spread.Sheets.Workbook(document.getElementById("ss"));
             console.log(stash.get('foo')); // 'Hello World'
-            // const electron = require('electron');
-            import * as electron from 'electron';
         });
         function dbConnect(action, data) {
             let query = {
@@ -51,7 +44,7 @@
             data = []
             console.log('dbconnect in');
             // const sql = require('mssql');
-            import * as sql from 'mssql';
+            import sql from 'mssql';
 
             const config = {
                 user: 'qlhs',
@@ -97,7 +90,7 @@
 
 <body style=" background-image: linear-gradient(to right top, #f4fd98, #f8d666, #fcab43, #fd7b36, #f83d3d);">
 
-    <script>
+    <script type="module">
 
         var gridContent = [
             { "Name": "Otto Clay", "Age": 25, "Country": 1, "Address": "Ap #897-1459 Quam Avenue", "Married": false },
@@ -140,8 +133,7 @@
                 document.getElementById('loadingScreen').style.display = "none";
                 document.getElementById('content').style.display = "block";
             }
-            // const M = require('materialize-css');
-            import * as M from 'materialize-css';
+            // import M from 'materialize-css';
 
         }
 
@@ -166,10 +158,11 @@
         height: 100vh;">
 
             <div id="player"></div>
-            <button class="waves-effect waves-light btn" onclick="loadPlayerHEVC()">Play</button>
+            <button class="waves-effect waves-light btn" onclick="abc()">Play</button>
 
             <video-js id="my_video_1" class="vjs-default-skin" controls preload="auto" width="640" height="268">
-                <source src="playlist.m3u8" type="application/x-mpegURL">
+                <source src="http://113.163.94.245/hls-live/livepkgr/_definst_/liveevent/thbt.m3u8"
+                    type="application/x-mpegURL">
             </video-js>
 
             <script src="https://unpkg.com/video.js/dist/video.js"></script>
@@ -180,14 +173,22 @@
             </script>
 
             <script>
-                async function loadPlayerHEVC() {
-                    var resource = 'http://10.70.39.32:80/streams/60dd68fdc88f570012526657/stream/60dd68fdc88f570012526657.m3u8'
-                    const { createFFmpeg } = FFmpeg;
-                    const ffmpeg = createFFmpeg({ log: true });
-                    const { fetchFile } = FFmpeg;
-                    await ffmpeg.load();
-                    await ffmpeg.run('-i', resource, '-vcodec', 'libx264', '-acodec', 'copy', '-f' ,'hls', '-hls_list_size', '3', '-hls_wrap', '5', 'playlist.m3u8' );
-                    ffmpeg.exit(0);
+                function abc() {
+                    console.log('in here')
+                    // window.api.receive("fromMain", (data) => {
+                    //     console.log(`Received ${data} from main process`);
+                    // });
+                    // window.api.send("toMain", "some data");                  
+                    window.api.testHEVC()
+                    
+                    // var resource = 'http://113.162.84.140:8092/streams/60debfafb5d1ba001329c06f/stream/60debfafb5d1ba001329c06f.m3u8'
+                    // const { createFFmpeg } = FFmpeg;
+                    // const ffmpeg = createFFmpeg({ log: true });
+                    // const { fetchFile } = FFmpeg;
+                    // await ffmpeg.load();
+                    // await ffmpeg.run('-re','-i', resource, '-vcodec', 'libx264', '-acodec', 'copy', '-f' ,'hls', '-hls_list_size', '3', '-hls_wrap', '5', 'playlist.m3u8' );
+                    // // await ffmpeg.run('-i', resource);
+                    // ffmpeg.exit(0);
                 }
             </script>
 
@@ -566,7 +567,7 @@
                 <div id="statistic" hidden class="col s12">
 
                     <div id="jsGrid"></div>
-                    <script>
+                    <script type="module">
                         var clients = gridContent;
 
                         var countries = [
@@ -601,9 +602,9 @@
                 <ul>
 
                 </ul>
-                <script type="module">
-                    // const { ipcRenderer } = electron;
+                <!-- <script type="module">
                     import {ipcRenderer} from "electron";
+                    // const { ipcRenderer } = electron;
 
                     const ul = document.querySelector('ul:not(.tabs .formList)');
 
@@ -634,7 +635,7 @@
                         ipcRenderer.send("printPDF", div_to_be_targeted);
                     }
 
-                </script>
+                </script> -->
             </div>
 
         </div>
